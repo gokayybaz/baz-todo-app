@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion"
 function TodoList() {
     const [todos, setTodos] = useState([]);
     const [newTodoText, setNewTodoText] = useState("");
+    const [completedTodos, setCompletedTodos] = useState([]);
 
     const addTodo = () => {
         if(newTodoText.trim() !== ""){
@@ -20,13 +21,27 @@ function TodoList() {
             alert("Lütfen bir görev giriniz.");
         }
     }
-
     const deleteTodo = (id) => {
-        setTodos(todos.filter(todo => todo.id !== id));
+        // Sadece bu sayfadan kaldır
+        //setCompletedTodos(completedTodos.filter(todo => todo.id !== id)); // {{ edit_2 }}
     }
 
     const toggleTodo = (id) => {
-        setTodos(todos.map(todo => todo.id === id ? { ...todo, completed: !todo.completed } : todo));
+        setTodos(todos.map(todo => {
+            if (todo.id === id) {
+                const updatedTodo = { ...todo, completed: !todo.completed };
+                // Güncellenen görevleri localStorage'a kaydet
+                saveTodos(); 
+                if (updatedTodo.completed) {
+                    // Tamamlandıysa 5000 ms sonra kaldır
+                    setTimeout(() => {
+                        deleteTodo(updatedTodo.id); // Bu sayfadan kaldır
+                    }, 5000);
+                }
+                return updatedTodo;
+            }
+            return todo;
+        }));
     }
 
     const saveTodos = () => {
@@ -42,6 +57,12 @@ function TodoList() {
 
     useEffect(() => {
         loadTodos();
+        const savedTodos = localStorage.getItem("todos");
+        if (savedTodos) {
+            const parsedTodos = JSON.parse(savedTodos);
+            setTodos(parsedTodos);
+            setCompletedTodos(parsedTodos.filter(todo => todo.completed)); // {{ edit_3 }}
+        }
     }, []);
 
     useEffect(() => {
