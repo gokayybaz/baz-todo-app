@@ -49,7 +49,7 @@ function TodoList() {
     }, [todos]);
     
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center p-4">
+    <main className='flex-grow flex items-center justify-center p-4'>
       <Card className="w-full max-w-md bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl overflow-hidden border border-gray-200">
         <CardContent className="p-6">
           <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Yapılacaklar</h1>
@@ -128,7 +128,7 @@ function TodoList() {
           )}
         </CardContent>
       </Card>
-    </div>
+      </main>
   )
 }
 
